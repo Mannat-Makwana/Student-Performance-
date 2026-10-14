@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Student Performance{% endblock %}
+{% block content %}
+<header class="page-header d-flex flex-wrap align-items-end justify-content-between gap-2">
+    <div>
+        <p class="text-primary fw-semibold text-uppercase small mb-1">Overview</p>
+        <h1 class="h2 mb-1">Student Performance Dashboard</h1>
+        <p class="text-secondary mb-0">A snapshot of results across all recorded subjects.</p>
+    </div>
+    <a class="btn btn-primary" href="{% url 'students:marks_create' %}">Add marks</a>
+</header>
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg">
+        <div class="card stat-card h-100"><div class="card-body"><div class="text-secondary small">Class average</div><div class="fs-3 fw-bold">{{ class_average }}</div></div></div>
+    </div>
+    <div class="col-6 col-lg">
+        <div class="card stat-card h-100"><div class="card-body"><div class="text-secondary small">Highest score</div><div class="fs-3 fw-bold">{{ highest_score }}</div></div></div>
+    </div>
+    <div class="col-6 col-lg">
+        <div class="card stat-card h-100"><div class="card-body"><div class="text-secondary small">Lowest score</div><div class="fs-3 fw-bold">{{ lowest_score }}</div></div></div>
+    </div>
+    <div class="col-6 col-lg">
+        <div class="card stat-card h-100"><div class="card-body"><div class="text-secondary small">Pass percentage</div><div class="fs-3 fw-bold">{{ pass_percentage }}%</div></div></div>
+    </div>
+    <div class="col-12 col-lg">
+        <div class="card stat-card h-100"><div class="card-body"><div class="text-secondary small">Topper</div><div class="fs-5 fw-bold">{{ topper_name }}</div></div></div>
+    </div>
+</div>
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="card stat-card h-100"><div class="card-body">
+            <h2 class="h5">Subject-wise average final marks</h2>
+            <div class="table-responsive"><table class="table table-hover align-middle mb-0">
+                <thead><tr><th>Subject</th><th class="text-end">Average</th></tr></thead>
+                <tbody>
+                {% for row in subject_averages %}<tr><td>{{ row.subject }}</td><td class="text-end">{{ row.average|floatformat:2 }}</td></tr>
+                {% empty %}<tr><td colspan="2" class="text-secondary">No marks have been recorded yet.</td></tr>{% endfor %}
+                </tbody>
+            </table></div>
+        </div></div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card stat-card h-100"><div class="card-body">
+            <h2 class="h5">Pass vs fail</h2>
+            <img class="chart-img" src="data:image/png;base64,{{ pass_fail_chart }}" alt="Pie chart showing pass versus fail marks">
+        </div></div>
+    </div>
+</div>
+<div class="row g-3">
+    <div class="col-lg-6"><div class="card stat-card"><div class="card-body">
+        <h2 class="h5">Subject averages</h2>
+        <img class="chart-img" src="data:image/png;base64,{{ subject_chart }}" alt="Bar chart of subject-wise average marks">
+    </div></div></div>
+    <div class="col-lg-6"><div class="card stat-card"><div class="card-body">
+        <h2 class="h5">Final marks distribution</h2>
+        <img class="chart-img" src="data:image/png;base64,{{ histogram_chart }}" alt="Histogram of final marks">
+    </div></div></div>
+</div>
+{% endblock %}
+

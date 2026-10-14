@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Predict | Student Performance{% endblock %}
+{% block content %}
+<header class="page-header"><p class="text-primary fw-semibold text-uppercase small mb-1">Linear regression</p><h1 class="h2">Predict a final score</h1><p class="text-secondary mb-0">The model is trained on existing internal and final mark records.</p></header>
+<div class="row g-4 align-items-start">
+    <div class="col-lg-5"><div class="card stat-card"><div class="card-body p-4">
+        {% if error %}<div class="alert alert-warning">{{ error }}{% if not can_predict %} <a href="{% url 'students:marks_create' %}">Add marks</a>.{% endif %}</div>{% endif %}
+        <form method="post">{% csrf_token %}
+            <label for="internalMarks" class="form-label">Internal marks (0–50)</label>
+            <input class="form-control mb-3" id="internalMarks" name="internal_marks" type="number" min="0" max="50" step="any" value="{{ internal_marks }}" required>
+            <button class="btn btn-primary" type="submit" {% if not can_predict %}disabled{% endif %}>Predict final marks</button>
+        </form>
+        {% if result != None %}<div class="alert alert-success mt-4 mb-0">Predicted final score: <strong>{{ result }} / 100</strong></div>{% endif %}
+    </div></div></div>
+    {% if chart %}<div class="col-lg-7"><div class="card stat-card"><div class="card-body"><h2 class="h5">Model fit</h2><img class="chart-img" src="data:image/png;base64,{{ chart }}" alt="Linear regression prediction chart"></div></div></div>{% endif %}
+</div>
+{% endblock %}
+

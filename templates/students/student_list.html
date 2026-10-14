@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Students | Student Performance{% endblock %}
+{% block content %}
+<header class="page-header d-flex flex-wrap align-items-end justify-content-between gap-2">
+    <div><p class="text-primary fw-semibold text-uppercase small mb-1">Directory</p><h1 class="h2 mb-0">Students</h1></div>
+    <a class="btn btn-primary" href="{% url 'students:create' %}">Add student</a>
+</header>
+<section class="card stat-card">
+    <div class="card-body">
+        <div class="row g-2 mb-3">
+            <div class="col-md-6"><label class="visually-hidden" for="studentSearch">Search students</label><input id="studentSearch" class="form-control" type="search" placeholder="Search by name or roll number"></div>
+            <div class="col-md-6 text-md-end"><span class="text-secondary small">Showing {{ students.start_index }}–{{ students.end_index }} of {{ students.paginator.count }}</span></div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="studentTable">
+                <thead><tr><th>Name</th><th>Roll number</th><th>Email</th><th>Department</th><th>Marks</th><th class="text-end">Actions</th></tr></thead>
+                <tbody>
+                {% for student in students %}
+                    <tr data-search="{{ student.name }} {{ student.roll_no }}">
+                        <td class="fw-semibold">{{ student.name }}</td><td>{{ student.roll_no }}</td><td>{{ student.email }}</td><td>{{ student.department }}</td><td>{{ student.marks.count }}</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" href="{% url 'students:update' student.pk %}">Edit</a>
+                            <button type="button" class="btn btn-sm btn-outline-danger delete-trigger" data-delete-url="{% url 'students:delete' student.pk %}" data-item-name="{{ student.name }}">Delete</button>
+                        </td>
+                    </tr>
+                {% empty %}<tr><td colspan="6" class="text-center text-secondary py-4">No students found. Add a student to get started.</td></tr>{% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if students.has_other_pages %}
+        <nav aria-label="Student pages"><ul class="pagination justify-content-end mb-0">
+            {% if students.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ students.previous_page_number }}">Previous</a></li>{% else %}<li class="page-item disabled"><span class="page-link">Previous</span></li>{% endif %}
+            {% for page_num in students.paginator.page_range %}<li class="page-item {% if page_num == students.number %}active{% endif %}"><a class="page-link" href="?page={{ page_num }}" {% if page_num == students.number %}aria-current="page"{% endif %}>{{ page_num }}</a></li>{% endfor %}
+            {% if students.has_next %}<li class="page-item"><a class="page-link" href="?page={{ students.next_page_number }}">Next</a></li>{% else %}<li class="page-item disabled"><span class="page-link">Next</span></li>{% endif %}
+        </ul></nav>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
